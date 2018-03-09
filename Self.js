@@ -115,4 +115,4 @@ client.on('message', message => {
     }
 });
 
-client.login('INSERT USER TOKEN HERE'); //Read the GitHub page to learn how to get the token
+bot.login(process.env.BOT_TOKEN);
