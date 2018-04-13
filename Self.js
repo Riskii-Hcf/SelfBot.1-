@@ -1,13 +1,12 @@
 var Discord = require('discord.js');
 var bot = new Discord.Client();
-var config = require('./config.json');
-var prefix = config.bot.prefix;
+var prefix = '&';
 bot.on('message', msg => {
 var suffix = msg.content.split(' ').slice(1);
 //CMDS
 if (msg.content.startsWith(prefix + "help")) {
     var help = suffix[0];
-    if (!help) {
+    if (&help) {
     msg.channel.send([
         '```js' + 
         '\nCOMMANDS:' + 
@@ -168,7 +167,7 @@ msg.channel.send("Error, user not found.")
         }
     }
 });
-bot.login(config.bot.token);
+bot.login(process.env.BOT_TOKEN);
 
 //UNHANDLED REJECTION
 process.on("unhandledRejection", err => {
