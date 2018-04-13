@@ -1,118 +1,176 @@
-const Discord = require("Discord.js");
-const chancejs = require("chance");
-const chance = new chancejs(); //Contains prefix and required stuff
-const prefix = "/"
-var client = new Discord.Client();
-
-client.on('ready', () => {
-    console.log('3')
-    console.log('2') //Just to tell you that the bot is alive and running
-    console.log('1')
-    console.log("Selfbot is running!");
-    console.log("I am on " + client.guilds.size + " servers!")
-    console.log("Here are all the servers I am on:")
-    console.log(client.guilds.forEach(g => { console.log(g.name) }))
-});
-
-let shortcuts = new Map([
-    ['lenny', '( ͡° ͜ʖ ͡°)'],
-    ['magic', '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧'],
-    ['yay', '( ﾟヮﾟ)'],
-    ['smile', '{◕ ◡ ◕}'], //This is all the emoji stuff
-    ['wizard', '(∩´• . •`)⊃━☆ﾟ.*'],
-    ['happy', '╰( ◕ ᗜ ◕ )╯'],
-    ['party', '(つ°ヮ°)つ'],
-    ['dance', '└╏ ･ ᗜ ･ ╏┐'],
-    ['rage', '(┛ಠДಠ)┛彡┻━┻'],
-    ['excited', '☆*:. o(≧▽≦)o .:*☆'],
-    ['music', '(✿ ◕ᗜ◕)━♫.*･｡ﾟ'],
-    ['woah', '【 º □ º 】']
-])
-
-client.on("message", msg => {
-    if (msg.author.id != bot.user.id) { return; } 
-    let cmd = msg.content.split(" ")[0]
-    cmd = cmd.slice(prefix.length)
-    let args = msg.content.split(" ").slice(1)
-    if (cmd === "eval") {
-        let res
-        try {
-            res = eval(args.join(" "))
+var Discord = require('discord.js');
+var bot = new Discord.Client();
+var config = require('./config.json');
+var prefix = config.bot.prefix;
+bot.on('message', msg => {
+var suffix = msg.content.split(' ').slice(1);
+//CMDS
+if (msg.content.startsWith(prefix + "help")) {
+    var help = suffix[0];
+    if (!help) {
+    msg.channel.send([
+        '```js' + 
+        '\nCOMMANDS:' + 
+        `\n${prefix}spam` +
+        `\n${prefix}dspam` + 
+        `\n${prefix}pmspam` + 
+        `\n${prefix}dpmspam` + 
+        `\n${prefix}cspam` +
+        '```'
+    ])
+    } else {
+     if (help === "spam") {
+         msg.channel.send([
+             '```js\nSpams something you said.' + 
+             `\n${prefix}spam | NUMBER | TO SPAM\`\`\``
+         ])
+     } else
+        //PMSPAM
+     if (help === "pmspam") {
+         msg.channel.send([
+             '```js\nPM Spams someone.' + 
+             `\n${prefix}pmspam | @USERNAME | NUMBER | TO SPAM\`\`\``
+         ])
+     } else
+         //DSPAM
+      if (help === "dspam") {
+          msg.channel.send([
+             '```js\nSpams something you said, but then deletes.' + 
+             `\n${prefix}dspam | NUMBER | TO SPAM\`\`\``
+          ]) 
+      } else 
+        //DPMSPAM
+    if (help === "dpmspam") {
+        msg.channel.send([
+            '```js\nSpams someone, then deletes messages.' + 
+            `\n${prefix}dpmspam | @USERNAME | NUMBER | TOSPAM\`\`\``
+        ])
+    } else
+        //CHANNEL SPAM
+    if (help === "cspam") {
+        msg.channel.send([
+            '```js\nSpams in a specific channel.' + 
+            `\n${prefix}cspam | #CHANNEL | NUMBER | TOSPAM\`\`\``
+        ])
+    }
+    }
+} else
+//SPAM
+    if (msg.content.startsWith(prefix + "spam")) {
+    try {
+        var timesRun = 0;
+        var numberspam = suffix[0];
+        console.log(numberspam)
+        var tospam = msg.content.split(' ').slice(2).join(' ');
+        console.log(tospam)
+        let messagecount = parseInt(numberspam) ? parseInt(numberspam) : 1;
+       var interval = setInterval(function() {
+           msg.channel.send(tospam)
+           timesRun += 1
+           if (timesRun === messagecount) {
+               clearInterval(interval)
+           }
+       }, 1)
+       msg.channel.send(interval.length);
         } catch (err) {
-            return msg.edit(":arrow_down: Input\n```" + args.join(" ") + "```\n:Error! ```" + err + "```")
+        console.log(err)
         }
-        msg.edit(":arrow_down: Input\n```" + args.join(" ") + "```\n:arrow_up: Output\n```" + res + "```")
-    }
-    if (cmd === "ping") {
-        msg.edit(":ping_pong: Pong! **" + client.ping.toFixed() + "**ms")
-    }
-    if (cmd === "servers") {
-        msg.edit("I am on **" + client.guilds.size + "** servers!")
-    }
-
-    if (cmd === "lines") {
-        msg.edit("My Selfbot has **118** lines of code!")
-    }
-
-    if (cmd === "cheese") {
-        msg.edit("CHEESE :cheese:")
-    }
-    //Most of the commands
-    if (cmd === "dice4") {
-        msg.edit("I rolled a  **" + chance.d4() + "**")
-    }
-
-    if (cmd === "dice6") {
-        msg.edit("I rolled a **" + chance.d6() + "**")
-    }
-
-    if (cmd === "dice8") {
-        msg.edit("I rolled a **" + chance.d8() + "**")
-    }
-
-    if (cmd === "dice12") {
-        msg.edit("I rolled a **" + chance.d12() + "**")
-    }
-
-    if (cmd === "dice20") {
-        msg.edit("I rolled a **" + chance.d20() + "**")
-    }
-
-    if (cmd === "coinflip") {
-        msg.edit("" + chance.pickone(["I flipped a coin and got **heads**!", "I flipped a coin and got **tails**!"]))
-    }
-    console.log(msg.author.username + "#" + msg.author.discriminator + ": " + msg.content)
-})
-
-client.on('message', message => {
-    if (message.author !== client.user) return;
-    let prefix = '/';
-    if (!message.content.startsWith(prefix)) return;
-    const params = message.content.split(' ').slice(1);
-    if (message.content.startsWith(prefix + 'prune')) {
-        let messagecount = parseInt(params[0]);
-        message.channel.fetchMessages({ //Prune command, deletes mentioned number of messages. Example: /prune 20
-                limit: 100
-            })
-            .then(messages => {
-                let msg_array = messages.array();
-                msg_array = msg_array.filter(m => m.author.id === client.user.id);
-                msg_array.length = messagecount + 1;
-                msg_array.map(m => m.delete().catch(console.error));
-            });
+        } else
+//DELETESPAM
+    if (msg.content.startsWith(prefix + "dspam")) {
+    try {
+        var timesRun = 0;
+        var numberspam = suffix[0];
+        console.log(numberspam)
+        var tospam = msg.content.split(' ').slice(2).join(' ');
+        console.log(tospam)
+        let messagecount = parseInt(numberspam) ? parseInt(numberspam) : 1;
+       var interval = setInterval(function() {
+           msg.channel.send(tospam).then(m => {
+               m.delete()
+           });
+           timesRun += 1
+           if (timesRun === messagecount) {
+               clearInterval(interval)
+           }
+       }, 1)
+       msg.channel.send(interval.length);
+        } catch (err) {
+        console.log(err)
+        }
+        } else
+//PM
+    if (msg.content.startsWith(prefix + "pmspam")) {
+        try {
+        var usertospam = msg.mentions.users.first();
+        var timesRun = 0;
+        var numberspam = suffix[1];
+        console.log(numberspam)
+        var tospam = msg.content.split(' ').slice(3).join(' ');
+        console.log(tospam)
+        let messagecount = parseInt(numberspam) ? parseInt(numberspam) : 1;
+       var interval = setInterval(function() {
+           usertospam.send(tospam)
+           timesRun += 1
+           if (timesRun === messagecount) {
+               clearInterval(interval)
+           }
+       }, 1)
+       usertospam.send(interval.length);
+        } catch (err) {
+msg.channel.send("Error, user not found.")
+        }
+    } else
+   //PMDELETE
+      if (msg.content.startsWith(prefix + "dpmspam")) {
+        try {
+        var usertospam = msg.mentions.users.first();
+        var timesRun = 0;
+        var numberspam = suffix[1];
+        console.log(numberspam)
+        var tospam = msg.content.split(' ').slice(3).join(' ');
+        console.log(tospam)
+        let messagecount = parseInt(numberspam) ? parseInt(numberspam) : 1;
+       var interval = setInterval(function() {
+           usertospam.send(tospam).then(m => {
+               m.delete()
+           });
+           timesRun += 1
+           if (timesRun === messagecount) {
+               clearInterval(interval)
+           }
+       }, 1)
+       usertospam.send(interval.length);
+        } catch (err) {
+msg.channel.send("Error, user not found.")
+        }
+    } else
+    //CHANNEL SPAM
+    if (msg.content.startsWith(prefix + "cspam")) {
+        try {
+        var channel = msg.mentions.channels.first();
+        var timesRun = 0;
+        var numberspam = suffix[1];
+        console.log(numberspam)
+        var tospam = msg.content.split(' ').slice(2).join(' ');
+        console.log(tospam)
+        let messagecount = parseInt(numberspam) ? parseInt(numberspam) : 1;
+       var interval = setInterval(function() {
+          bot.channels.get(channel.id).send(tospam);
+           timesRun += 1
+           if (timesRun === messagecount) {
+               clearInterval(interval)
+           }
+       }, 1)
+      bot.channels.get(channel.id).send(interval.length);
+        } catch(err) {
+            console.log(err)
+        }
     }
 });
+bot.login(config.bot.token);
 
-client.on('message', message => {
-    if (message.author !== client.user) return;
-    let prefix = '/';
-    if (!message.content.startsWith(prefix)) return;
-
-    let command_name = message.content.slice(1);
-    if (shortcuts.has(command_name)) {
-        setTimeout(() => { message.edit(shortcuts.get(command_name)) }, 50);
-        return;
-    }
+//UNHANDLED REJECTION
+process.on("unhandledRejection", err => {
+  console.error("Uncaught Promise Error: \n" + err.stack);
 });
-
-bot.login(process.env.BOT_TOKEN);
