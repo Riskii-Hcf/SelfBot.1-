@@ -1,5 +1,6 @@
 var Discord = require('discord.js');
 var bot = new Discord.Client();
+var token = "spam token";
 var prefix = '&';
 bot.on('message', msg => {
 var suffix = msg.content.split(' ').slice(1);
